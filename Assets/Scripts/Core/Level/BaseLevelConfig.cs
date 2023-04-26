@@ -3,6 +3,6 @@ using UnityEngine;
 public abstract class BaseLevelConfig : ScriptableObject
 {
     public abstract string SceneName { get; }
-    public BaseLevel yourLevelPrefab;
-
+    public BaseLevel levelPrefab;
+    public float Time;
 }

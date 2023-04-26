@@ -7,8 +7,8 @@ public abstract class BaseLevel : MonoBehaviour
     internal Action<float> OnSatisfactionChanged;
     internal Action<LevelData> OnFinish;
 
-    protected abstract void SubscribeToLevelRelatedEvents();
-    protected abstract void UnSubscribeFromLevelRelatedEvents();
+    protected abstract void SubscribeEvents();
+    protected abstract void UnSubscribeEvents();
 
     internal bool ForcedToFinish => _forcedFinishStatus != LevelFinishStatus.None;
     private LevelFinishStatus _forcedFinishStatus;
@@ -39,13 +39,13 @@ public abstract class BaseLevel : MonoBehaviour
 
     protected internal virtual void StartLevel()
     {
-        SubscribeToLevelRelatedEvents();
+        SubscribeEvents();
         OnStart?.Invoke();
     }
 
     protected internal virtual void FinishLevel()
     {
-        UnSubscribeFromLevelRelatedEvents();
+        UnSubscribeEvents();
         OnFinish?.Invoke(LevelData.GenerateFromLevel(this));
     }
 

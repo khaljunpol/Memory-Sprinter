@@ -23,6 +23,7 @@ public class LevelManager : Singleton<LevelManager>
 
     #region Serialized
 
+    [SerializeField] private Transform levelContainer;
     [SerializeField] private int minimumLevelToLoadAfterFirstFinish = 2;
     [SerializeField] private List<BaseLevelConfig> levelsConfigs;
 
@@ -31,7 +32,7 @@ public class LevelManager : Singleton<LevelManager>
     #region Private region
 
     private bool _levelIsReady;
-    private BaseLevelConfig _pickedConfig;
+    private BaseLevelConfig _currentConfig;
     private bool levelStarted;
     private bool levelQueuedForStart;
 
@@ -64,8 +65,8 @@ public class LevelManager : Singleton<LevelManager>
 
     private void CreateNewLevel()
     {
-        _pickedConfig = GetLevelConfigToLoad();
-        if (string.IsNullOrEmpty(_pickedConfig.SceneName) || _pickedConfig.SceneName.ToString() == SceneManager.GetActiveScene().name)
+        _currentConfig = GetLevelConfigToLoad();
+        if (string.IsNullOrEmpty(_currentConfig.SceneName) || _currentConfig.SceneName.ToString() == SceneManager.GetActiveScene().name)
         {
             CreateLevelWithPrefab();
             BroadcastLevelReady();
@@ -86,13 +87,14 @@ public class LevelManager : Singleton<LevelManager>
     {
         if (CurrentLevel != null)
             Destroy(CurrentLevel.gameObject);
+            
         CreateAndInitializeLevel();
     }
 
     private void CreateAndInitializeLevel()
     {
-        CurrentLevel = Instantiate(_pickedConfig.yourLevelPrefab, transform);
-        CurrentLevel.InitializeLevel(_pickedConfig);
+        CurrentLevel = Instantiate(_currentConfig.levelPrefab, levelContainer);
+        CurrentLevel.InitializeLevel(_currentConfig);
     }
 
     internal static int GetLevelAttempts(int levelNumber)
@@ -106,7 +108,7 @@ public class LevelManager : Singleton<LevelManager>
             Destroy(CurrentLevel.gameObject);
 
         StartCoroutine(SceneLoadingBehavior());
-        AsyncOperationBasedOnCurrentLevelScene = SceneManager.LoadSceneAsync(_pickedConfig.SceneName.ToString());
+        AsyncOperationBasedOnCurrentLevelScene = SceneManager.LoadSceneAsync(_currentConfig.SceneName.ToString(), LoadSceneMode.Additive);
         AsyncOperationBasedOnCurrentLevelScene.completed += InitializeLevelAfterSceneLoad;
     }
 

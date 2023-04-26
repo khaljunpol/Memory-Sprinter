@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4553002091f7a43dc9120b0a2613af66, type: 3}
-  m_Name: GameManagerDemoLevel2
+  m_Name: Level2
   m_EditorClassIdentifier: 
-  yourLevelPrefab: {fileID: 868901722180812452, guid: 049c8ee63f2af4be388d5b3b836572be, type: 3}
-  Dummy: {fileID: 3784286209265341146, guid: e89c0e2b4cf3640329dd3d6f95c377fb, type: 3}
-  SecondDummy: {fileID: 7939812191499412142, guid: 9d013762145da410fb84a8dcca509a62, type: 3}
+  levelPrefab: {fileID: 5520019421419736839, guid: 33797553c91393b4f9b2970bf0b13c53, type: 3}
+  Time: 5
+  gridConfig: {fileID: 11400000, guid: 958a6bf65e621b84fa2ffba9f658f516, type: 2}
+  tilePrefab: {fileID: 1928881322, guid: 3202fa47033b9d84dabf2d540080908d, type: 3}

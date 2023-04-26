@@ -3,19 +3,19 @@ using UnityEngine;
 public class BasicLevel : BaseLevel
 {
     private BasicLevelConfig _config;
-    [SerializeField] private Transform dummyPlacement1;
-    [SerializeField] private Transform dummyPlacement2;
+
+    [SerializeField] private Grid _grid;
+    
     public override void InitializeLevel(BaseLevelConfig config) // Before starting the level. (Usually behind start panel)
     {
         base.InitializeLevel(config);
         _config = (BasicLevelConfig)config;
-        InstantiateSomeLevelThings();
+        InstantiateLevelObjects();
     }
 
-    private void InstantiateSomeLevelThings()
+    private void InstantiateLevelObjects()
     {
-        GameObject.Instantiate(_config.Dummy, dummyPlacement1);
-        GameObject.Instantiate(_config.SecondDummy, dummyPlacement2);
+        _grid.InitializeGrid(this._config.gridConfig);
     }
 
     protected internal override void StartLevel() // When click on start
@@ -33,11 +33,11 @@ public class BasicLevel : BaseLevel
         base.FinishLevel();
     }
 
-    protected override void SubscribeToLevelRelatedEvents() // For example, listen to what player does
+    protected override void SubscribeEvents() // For example, listen to what player does
     {
     }
 
-    protected override void UnSubscribeFromLevelRelatedEvents()
+    protected override void UnSubscribeEvents()
     {
     }
 
