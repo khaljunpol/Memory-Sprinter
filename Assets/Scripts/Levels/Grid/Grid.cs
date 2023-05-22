@@ -5,12 +5,16 @@ public class Grid : MonoBehaviour
 {
     public Transform TileParent; 
 
+    private AdjustGridLayoutCellSize _gridSizer;
     private GridConfig _gridConfig;
     private List<Tile> _tiles = new List<Tile>();
+
+
     public void InitializeGrid(GridConfig gridConfig)
     {
         TileParent = TileParent ?? this.transform;
         _gridConfig = gridConfig;
+        _gridSizer = this.GetComponent<AdjustGridLayoutCellSize>();
         InstantiateLevelObjects();
     }
 
@@ -24,5 +28,7 @@ public class Grid : MonoBehaviour
                 this._tiles.Add(tile);
             }
         }
+
+        _gridSizer.UpdateSize(this._gridConfig.column, this._gridConfig.row);
     }
 }

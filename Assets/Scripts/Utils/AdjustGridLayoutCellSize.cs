@@ -5,25 +5,30 @@ using UnityEngine.UI;
 [RequireComponent(typeof(GridLayoutGroup))]
 public class AdjustGridLayoutCellSize : MonoBehaviour
 {
-    public enum Axis { X, Y };
-    public enum RatioMode { Free, Fixed };
+    [SerializeField] public int columns;
+    [SerializeField] public int rows;
+    [SerializeField] public bool fitToParent;
+    [SerializeField] public Vector2 cellSize;
  
-    [SerializeField] Axis expand;
-    [SerializeField] RatioMode ratioMode;
-    [SerializeField] float cellRatio = 1;
- 
-    new RectTransform transform;
-    GridLayoutGroup grid;
+    new RectTransform rectTransform;
+    GridLayoutGroup gridLayout;
  
     void Awake()
     {
-        transform = (RectTransform)base.transform;
-        grid = GetComponent<GridLayoutGroup>();
+        rectTransform = (RectTransform)base.transform;
+        gridLayout = GetComponent<GridLayoutGroup>();
     }
  
     // Start is called before the first frame update
     void Start()
     {
+        UpdateCellSize();
+    }
+
+    public void UpdateSize(int column, int row)
+    {
+        columns = column;
+        rows = row;
         UpdateCellSize();
     }
  
@@ -42,29 +47,30 @@ public class AdjustGridLayoutCellSize : MonoBehaviour
  
     void OnValidate()
     {
-        transform = (RectTransform)base.transform;
-        grid = GetComponent<GridLayoutGroup>();
+        rectTransform = (RectTransform)base.transform;
+        gridLayout = GetComponent<GridLayoutGroup>();
         UpdateCellSize();
     }
  
     void UpdateCellSize()
     {
-        var count = grid.constraintCount;
-        if (expand == Axis.X)
+        if (gridLayout == null || rectTransform == null)
         {
-            float spacing = (count - 1) * grid.spacing.x;
-            float contentSize = transform.rect.width - grid.padding.left - grid.padding.right - spacing;
-            float sizePerCell = contentSize / count;
-            grid.cellSize = new Vector2(sizePerCell, ratioMode == RatioMode.Free ? grid.cellSize.y : sizePerCell * cellRatio);
-         
+            Debug.LogError("FixedSizeGridLayout: GridLayoutGroup or RectTransform component is missing.");
+            return;
         }
-        else //if (expand == Axis.Y)
+
+        if (fitToParent)
         {
-            float spacing = (count - 1) * grid.spacing.y;
-            float contentSize = transform.rect.height - grid.padding.top - grid.padding.bottom -spacing;
-            float sizePerCell = contentSize / count;
-            grid.cellSize = new Vector2(ratioMode == RatioMode.Free ? grid.cellSize.x : sizePerCell * cellRatio, sizePerCell);
+            cellSize.x = (rectTransform.rect.width - (gridLayout.padding.left + gridLayout.padding.right) - (gridLayout.spacing.x * (columns - 1))) / columns;
         }
+
+        cellSize.y = cellSize.x;
+        rectTransform.sizeDelta = new Vector2(columns * cellSize.x + (gridLayout.spacing.x * (columns - 1)) + gridLayout.padding.left + gridLayout.padding.right, rows * cellSize.y + (gridLayout.spacing.y * (rows - 1)) + gridLayout.padding.top + gridLayout.padding.bottom);
+
+        gridLayout.cellSize = cellSize;
+        gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        gridLayout.constraintCount = columns;
     }
 }
  
